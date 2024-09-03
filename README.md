@@ -3,6 +3,8 @@ Viimaste õppeväljundite hindamise töö.
 
 ## What needs to be done?
 
+This assignment's point is to create a fully functional backend REST API with token-based authorization and a frontend application that interacts with the backend. There are two main features: TODO application and integration with OpenWeatherAPI.
+
 #### Backend REST API
 -  Authentication (All endpoints will be protected by token)
 -  Create an endpoint that responds with [OpenWeatherAPI](https://openweathermap.org/api) data.

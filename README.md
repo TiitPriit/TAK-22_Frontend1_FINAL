@@ -13,16 +13,16 @@ Authentication (All endpoints will be protected by token)
   -  Data can be saved in a local array, having a database will give extra credits
   -  Create CRUD operations (CREATE, READ, UPDATE, DELETE) endpoints
 
-#### Requirements
+### Requirements
 
 #### Authentication
 -  Implement token-based authentication for your backend
 -  All endpoints must be protected by the token (hint: middleware)
--  
+  
 #### OpenWeatherAPI Integration
 -  Create an endpoint that fetches and responds with data from the OpenWeatherAPI.
 - The data should be fetched dynamically based on parameters (e.g., city name) provided by the client/frontend.
-- 
+
 #### TODO application
 - Implement RESTful endpoints for your TODO actions
 - Each TODO has this data structure:
@@ -32,6 +32,7 @@ Authentication (All endpoints will be protected by token)
   - **status** (pending, in-progress, done) 
   - **createdAt** 
   - **updatedAt**
+ 
 - CRUD resources will be:
   - **CREATE**
   - **READ**

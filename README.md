@@ -6,7 +6,6 @@ Viimaste õppeväljundite hindamise töö.
 #### Backend REST API
 -  Authentication (All endpoints will be protected by token)
 -  Create an endpoint that responds with [OpenWeatherAPI](https://openweathermap.org/api) data.
--  Create docs for your project, including README for easy project installation
 -  Implement TODO application endpoints
   -  Data can be saved in a local array, having a database will give extra credits
   -  Create CRUD operations (CREATE, READ, UPDATE, DELETE) endpoints

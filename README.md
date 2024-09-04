@@ -27,7 +27,7 @@ Authentication (All endpoints will be protected by token)
 - Implement RESTful endpoints for your TODO actions
 - Each TODO has this data structure:
   - **id**
-  - **title** 
+  - **title**
   - **description** 
   - **status** (pending, in-progress, done) 
   - **createdAt** 

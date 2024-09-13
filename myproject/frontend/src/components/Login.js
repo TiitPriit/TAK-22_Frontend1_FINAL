@@ -7,12 +7,8 @@ const Login = ({ setToken }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login form submitted'); // Debugging log
-    console.log('Username:', username); // Debugging log
-    console.log('Password:', password); // Debugging log
     try {
-      const response = await axios.post('http://localhost:3009/login', { username, password });
-      console.log('Response:', response.data); // Debugging log
+      const response = await axios.post('http://localhost:3007/login', { username, password });
       setToken(response.data.token);
     } catch (error) {
       console.error('Error logging in', error);

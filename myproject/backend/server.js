@@ -3,29 +3,14 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
 
 const app = express();
-const port = 3009;
+const port = 3007;
 const secretKey = 'tiitpriit';
-const todosFilePath = path.join(__dirname, 'todos.json');
 
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
-
-// Read TODOs from file
-let todos = [];
-if (fs.existsSync(todosFilePath)) {
-  const data = fs.readFileSync(todosFilePath, 'utf8');
-  todos = JSON.parse(data);
-}
-
-// Write TODOs to file
-const saveTodosToFile = () => {
-  fs.writeFileSync(todosFilePath, JSON.stringify(todos, null, 2));
-};
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
@@ -77,6 +62,8 @@ app.get('/weather/:city', async (req, res) => {
   }
 });
 
+let todos = []; // This will be your "database" for now
+
 app.post('/todos', verifyToken, (req, res) => {
   const todo = {
     id: todos.length + 1,
@@ -87,7 +74,6 @@ app.post('/todos', verifyToken, (req, res) => {
     updatedAt: new Date(),
   };
   todos.push(todo);
-  saveTodosToFile();
   res.status(201).json(todo);
 });
 
@@ -108,7 +94,6 @@ app.put('/todos/:id', verifyToken, (req, res) => {
   todo.description = req.body.description;
   todo.status = req.body.status;
   todo.updatedAt = new Date();
-  saveTodosToFile();
   res.json(todo);
 });
 
@@ -116,7 +101,6 @@ app.delete('/todos/:id', verifyToken, (req, res) => {
   const index = todos.findIndex(t => t.id === Number(req.params.id));
   if (index === -1) return res.status(404).json({ message: 'Todo not found' });
   todos.splice(index, 1);
-  saveTodosToFile();
   res.status(204).end();
 });
 
@@ -128,7 +112,7 @@ const users = [
 
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-  console.log('Received request:', username, password); // Debug log
+  console.log('Received request:', username, password); // Debugging log
   const user = users.find(u => u.username === username && u.password === password);
 
   if (!user) {

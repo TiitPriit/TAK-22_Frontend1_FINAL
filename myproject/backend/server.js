@@ -1,3 +1,5 @@
+require('dotenv').config(); // Load environment variables
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -9,8 +11,12 @@ const port = 3007;
 const secretKey = 'tiitpriit';
 
 // Middleware
-app.use(bodyParser.json()); // Parse incoming JSON requests
-app.use(cors()); // Enable Cross-Origin Resource Sharing
+app.use(bodyParser.json());
+app.use(cors());
+
+// In-memory cache object
+const weatherCache = {};
+const CACHE_TTL = 10 * 60 * 1000; // 10 minutes in milliseconds
 
 // Start the server
 app.listen(port, () => {
@@ -50,20 +56,38 @@ app.get('/protected', verifyToken, (req, res) => {
   res.status(200).send({ message: 'You have accessed a protected route!' });
 });
 
-// Endpoint to get weather data for a city
+// Endpoint to get weather data for a city with caching
 app.get('/weather/:city', async (req, res) => {
   const city = req.params.city;
-  const apiKey = '32056790a7c14d577697c48469ac5291';
+  const apiKey = process.env.OPENWEATHER_API_KEY; // Load API key from .env
 
-  console.log('Received weather request for city:', city); // Debugging log
+  if (!apiKey) {
+    return res.status(500).json({ error: 'Weather API key is missing in server configuration' });
+  }
+
+  // Check if data is in the cache and not expired
+  if (weatherCache[city] && Date.now() - weatherCache[city].timestamp < CACHE_TTL) {
+    console.log(`Returning cached data for ${city}`);
+    return res.json(weatherCache[city].data);
+  }
+
+  console.log(`Fetching new data for ${city} from API`);
 
   try {
-    const response = await axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`);
-    console.log('Weather API response:', response.data); // Debugging log
-    res.send(response.data);
+    const response = await axios.get(
+      `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+    );
+
+    // Save data in the cache
+    weatherCache[city] = {
+      data: response.data,
+      timestamp: Date.now(),
+    };
+
+    res.json(response.data);
   } catch (error) {
-    console.error('Error retrieving weather data:', error); // Debugging log
-    res.status(500).send({ message: 'Error retrieving weather data' });
+    console.error('Error retrieving weather data:', error.message);
+    res.status(500).json({ message: 'Error retrieving weather data' });
   }
 });
 
